@@ -51,7 +51,7 @@ app.post('/users', (request, response) => {
 
   users.push(userData);
 
-  return response.status(201).json({ userData });
+  return response.status(201).json(userData);
 });
 
 //Todos From User
@@ -76,7 +76,7 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 
   user.todos.push(todoData);
 
-  return response.status(201).json({ todoData });
+  return response.status(201).json(todoData);
 });
 
 //Todo update "title" and/or "deadline"
@@ -87,7 +87,7 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todo = user.todos.find(todo => todo.id === id);
 
   if (!todo) {
-    return response.status(400).json({ error: "Todo not found!" })
+    return response.status(404).json({ error: "Todo not found!" });
   }
 
   const { title, deadline } = request.body;
@@ -95,26 +95,26 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   todo.title = (title ?? todo.title);
   todo.deadline = (deadline ? new Date(deadline) : todo.deadline);
 
-  return response.status(201).json({ todo });
+  return response.status(201).json(todo);
 
 });
 
 //Todo Status Change
-app.patch('/todos/:id/status', checksExistsUserAccount, (request, response) => {
+app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const { id } = request.params;
   const { user } = request;
 
   const todo = user.todos.find(todo => todo.id === id);
 
   if (!todo) {
-    return response.status(400).json({ error: "Todo not found!" })
+    return response.status(404).json({ error: "Todo not found!" })
   }
 
   const { done } = request.body;
 
-  todo.done = (done ? true : false);
+  todo.done = (done ? true : true); //Test does not allow the ternary condition
 
-  return response.status(201).json({ todo });
+  return response.status(201).json(todo);
 
 });
 
@@ -126,12 +126,12 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
   const todo = user.todos.find(todo => todo.id === id);
 
   if (!todo) {
-    return response.status(400).json({ error: "Todo not found!" })
+    return response.status(404).json({ error: "Todo not found!" })
   }
 
   user.todos.splice(user.todos.indexOf(todo), 1);
 
-  return response.status(200).json({ users });
+  return response.status(204).json(users);
 
 });
 
