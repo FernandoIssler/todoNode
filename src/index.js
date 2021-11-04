@@ -110,9 +110,7 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
     return response.status(404).json({ error: "Todo not found!" })
   }
 
-  const { done } = request.body;
-
-  todo.done = (done ? true : true); //Test does not allow the ternary condition
+  todo.done = true;
 
   return response.status(201).json(todo);
 
